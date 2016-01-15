@@ -92,6 +92,20 @@ describe("Negative:", function () {
             expect(err.message).toBe("Streaming not supported.");
         });
     });
+
+    it('should not modify input file object', function(done){
+        var fakeFile = getBuffer('/*! special */ js code /* normal */');
+        var stream = decomment();
+        stream.once('data', function (newFile) {
+            var data = newFile.contents;
+            expect(data).toBeTruthy();
+            expect(data.toString()).toBe(" js code ");
+        });
+        stream.once('end', done);
+        stream.write(fakeFile);
+        stream.end();
+        expect(fakeFile.contents.toString()).toBe('/*! special */ js code /* normal */');
+    });
 });
 
 function getFakeDest(content) {

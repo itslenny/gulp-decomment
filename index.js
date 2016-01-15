@@ -13,8 +13,9 @@ function main(options, func) {
         if (file.isStream()) {
             cb(new PluginError("gulp-decomment", "Streaming not supported."));
         }
-        file.contents = new Buffer(func(file.contents.toString(), options));
-        this.push(file);
+        var newFile = file.clone();
+        newFile.contents = new Buffer(func(file.contents.toString(), options));
+        this.push(newFile);
         return cb();
     });
 }
